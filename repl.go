@@ -11,7 +11,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, ...string) error
 }
 
 type config struct{
@@ -23,15 +23,6 @@ func getCofig() *config{
 	return &config{};
 }
 
-type PokeApiResp struct {
-	Count    int    `json:"count"`
-	Next     string `json:"next"`
-	Previous any    `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
-}
 
 
 
@@ -56,6 +47,11 @@ func getCommands() map[string]cliCommand {
 			name: "mapb",
 			description: "Fetches last 20",
 			callback: commandMapB,
+		},
+		"explore":{
+			name: "explore",
+			description: "Explore an area to see pokemon(s) in that area",
+			callback: commandExplore,
 		},
 	}
 }
@@ -96,12 +92,16 @@ func startRepl(cfg *config){
 			fmt.Println("got nothing bro :(")
 		}else{
 			gotCmd:=strings.ToLower(res[0]);
+			var argsToPass []string
+			if (len(res)>1){
+				argsToPass=res[1:]
+			}
 			cmdStruct, ok:=getCommands()[gotCmd]
 			if (!ok){
 				fmt.Print("Unknown command\n");
 				continue;
 			}else{
-				err:=cmdStruct.callback(cfg)
+				err:=cmdStruct.callback(cfg, argsToPass...)
 				if (err!=nil){
 					fmt.Print(err)
 				}

@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"github.com/krish-vj/pokedexcli/resps"
 	
 )
 
-func commandMap(cfg *config) error{
+func commandMap(cfg *config, _ ...string) error{
 	url:="https://pokeapi.co/api/v2/location-area?offset=0&limit=20";
 	if (cfg.Next!=""){
 		url=cfg.Next;
 	}
-	pokeStr, err:=lookUp(url, cfg)
+	pokeStr, err:=lookUp[resps.PokeApiResp](url, cfg)
 	if (err!=nil || pokeStr==nil){
 		return err
 	}

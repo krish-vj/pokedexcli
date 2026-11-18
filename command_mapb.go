@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/krish-vj/pokedexcli/resps"
 )
-func commandMapB(cfg *config) error{
+func commandMapB(cfg *config, _ ...string) error{
 	if (cfg.Previous==""){
 		fmt.Print("you're on the first page");
 		return nil;
@@ -12,7 +14,7 @@ func commandMapB(cfg *config) error{
 		// Results? //ig i will stick with calling the api for now
 
 	url:= cfg.Previous;
-	pokeStr, err:=lookUp(url, cfg)
+	pokeStr, err:=lookUp[resps.PokeApiResp](url, cfg)
 	if (err!=nil){
 		return err;
 	}

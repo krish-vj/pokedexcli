@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-func lookUp(url string, cfg *config) (*PokeApiResp, error) {
-	var pokeStr PokeApiResp
+func lookUp[T any](url string, cfg *config) (*T, error) {
+	var pokeStr T
 	//check cache
 	bytes, mila := cfg.cachePtr.Get(url)
 	done := false
