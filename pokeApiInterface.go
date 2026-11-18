@@ -1,0 +1,43 @@
+package main
+
+//baad mai implement karenge
+import (
+	"encoding/json"
+	"log/slog"
+	"net/http"
+)
+
+func lookUp(url string, cfg *config) (*PokeApiResp, error) {
+	var pokeStr PokeApiResp
+	//check cache
+	bytes, mila := cfg.cachePtr.Get(url)
+	done := false
+	if mila {
+		slog.Info("cache hit!", "key", url)
+		err := json.Unmarshal(bytes, &pokeStr)
+		//if err go into the else block
+		if err == nil {
+			done = true
+		}
+	}else{
+		slog.Info("cache MISS!", "key", url)
+	}
+	if !done {
+		resp, err := http.Get(url)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+		decoder := json.NewDecoder(resp.Body)
+
+		err = decoder.Decode(&pokeStr)
+		if err != nil {
+			return nil, err
+		}
+		bytes, err := json.Marshal(&pokeStr)
+		if err == nil {
+			cfg.cachePtr.Add(url, bytes)
+		}
+	}
+	return &pokeStr, nil
+}
