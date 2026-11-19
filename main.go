@@ -16,7 +16,7 @@ func main(){
 	}
 	const timeDurationForCache=time.Minute*5;
 	slog.Info("creating config")
-	configPtr:=&config{};
+	configPtr:=getCofig()
 	cachePtr:=pokecache.NewCache(timeDurationForCache);
 	configPtr.cachePtr=cachePtr
 	startRepl(configPtr)

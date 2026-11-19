@@ -3,6 +3,7 @@ package main
 //baad mai implement karenge
 import (
 	"encoding/json"
+	"io"
 	"log/slog"
 	"net/http"
 )
@@ -28,16 +29,16 @@ func lookUp[T any](url string, cfg *config) (*T, error) {
 			return nil, err
 		}
 		defer resp.Body.Close()
-		decoder := json.NewDecoder(resp.Body)
-
-		err = decoder.Decode(&pokeStr)
+		// decoder := json.NewDecoder(resp.Body)
+		bytesS, err:=io.ReadAll(resp.Body)
+		// err = decoder.Decode(&pokeStr)
 		if err != nil {
 			return nil, err
 		}
-		bytes, err := json.Marshal(&pokeStr)
-		if err == nil {
-			cfg.cachePtr.Add(url, bytes)
-		}
+		// bytes, err := json.Marshal(&pokeStr)
+		json.Unmarshal(bytesS, &pokeStr)
+		cfg.cachePtr.Add(url, bytesS)
+		
 	}
 	return &pokeStr, nil
 }

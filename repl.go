@@ -1,11 +1,13 @@
 package main
 
 import (
-	"github.com/krish-vj/pokedexcli/pokecache"
 	"bufio"
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/krish-vj/pokedexcli/pokecache"
+	"github.com/krish-vj/pokedexcli/resps"
 )
 
 type cliCommand struct {
@@ -18,9 +20,10 @@ type config struct{
 	Next string 
 	Previous string 
 	cachePtr *pokecache.Cache
+	caughtPokemons map[string]resps.Pokemon
 }
 func getCofig() *config{
-	return &config{};
+	return &config{caughtPokemons: make(map[string]resps.Pokemon)};
 }
 
 
@@ -53,6 +56,21 @@ func getCommands() map[string]cliCommand {
 			description: "Explore an area to see pokemon(s) in that area",
 			callback: commandExplore,
 		},
+		"catch":{
+			name: "catch",
+			description: "Catch a pokemon by passing it's name/id",
+			callback: commandCatch,
+		},
+		"inspect":{
+			name: "inspect",
+			description: "Inspect a pokemon by passing it's name/id",
+			callback: commandInspect,
+		},
+		"pokedex":{
+			name: "pokedex",
+			description: "prints a list of all the names of the Pokemon you have caught",
+			callback: commandPokedex,
+		}, 
 	}
 }
 func cleanInput(text string) []string{
